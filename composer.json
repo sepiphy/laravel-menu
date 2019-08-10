@@ -1,0 +1,46 @@
+{
+    "name": "sepiphy/laravel-menu",
+    "description": "The sepiphy/laravel-menu package",
+    "keywords": [
+        "sepiphy", "laravel", "laravel-menu", "menu"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/sepiphy/laraveltools",
+    "support": {
+        "issues": "https://github.com/sepiphy/laraveltools/issues",
+        "source": "https://github.com/sepiphy/laraveltools"
+    },
+    "authors": [
+        {
+            "name": "Quynh Xuan Nguyen",
+            "email": "seriquynh@gmail.com"
+        }
+    ],
+    "require": {
+        "illuminate/support": "5.8.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sepiphy\\Laravel\\Menu\\": ""
+        },
+        "files": [
+            "functions.php"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Sepiphy\\Laravel\\Menu\\MenuServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
