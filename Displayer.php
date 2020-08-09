@@ -23,7 +23,7 @@ use Illuminate\Support\HtmlString;
 use Sepiphy\Laravel\Menu\Eloquent\Menu;
 use Sepiphy\Laravel\Menu\Eloquent\MenuItem;
 
-class Displayer implements DisplayInterface
+class Displayer implements DisplayerInterface
 {
     /**
      * @var array
