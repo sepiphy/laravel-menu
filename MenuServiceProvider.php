@@ -25,6 +25,8 @@ class MenuServiceProvider extends ServiceProvider
         $this->app->singleton(DisplayerInterface::class, function () {
             return new Displayer();
         });
+
+        $this->app->alias(DisplayerInterface::class, Displayer::class);
     }
 
     /**
