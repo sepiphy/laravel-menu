@@ -20,9 +20,10 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
+use Sepiphy\Laravel\Menu\Eloquent\Menu;
 use Sepiphy\Laravel\Menu\Eloquent\MenuItem;
 
-class Displayer
+class Displayer implements DisplayInterface
 {
     /**
      * @var array
@@ -38,6 +39,17 @@ class Displayer
      * @var \Closure
      */
     protected $activeCallback;
+
+    public function __construct()
+    {
+        $this->visibleCallback = function (MenuItem $menuItem) {
+            return true;
+        };
+
+        $this->activeCallback = function (MenuItem $menuItem) {
+            return URL::to($menuItem->link) === Request::url();
+        };
+    }
 
     /**
      * {@inheritdoc}
@@ -64,20 +76,15 @@ class Displayer
     /**
      * {@inheritdoc}
      */
-    public function nestable($menu)
+    public function visibleUsing(Closure $callback)
     {
-        return $this->getNestableFor($menu);
+        $this->visibleCallback = $callback;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function visible(Closure $callback)
-    {
-        $this->visibleCallback = $callback;
-    }
-
-    public function active(Closure $callback)
+    public function activeUsing(Closure $callback)
     {
         $this->activeCallback = $callback;
     }
@@ -108,7 +115,7 @@ class Displayer
         $menu = App::make($class)->where('code', $code)->first();
 
         if ($menu) {
-            $menu->items = $this->getNestableFor($menu);
+            $menu->items = $this->getChildrenFor($menu);
         } else {
             $menu = App::make($class);
             $menu->items = collect([]);
@@ -118,43 +125,44 @@ class Displayer
     }
 
     /**
+     * @param  Menu  $menu
      * @return \Illuminate\Support\Collection
      */
-    protected function getNestableFor($menu)
+    protected function getChildrenFor(Menu $menu)
     {
-        $items = App::make(Config::get('menu.eloquent.menu_item'))
+        $menuItems = App::make(Config::get('menu.eloquent.menu_item'))
             ->where('menu_id', $menu->getKey())
             ->orderBy('position')
             ->orderBy('parent_id')
             ->get()
         ;
 
-        foreach ($items as $i => $item) {
-            if ($this->hide($item)) {
-                $items->pull($i);
+        foreach ($menuItems as $i => $menuItem) {
+            if (!$this->isItemVisible($menuItem)) {
+                $menuItems->pull($i);
                 continue;
             }
 
-            $item->children = $this->getChildrenForParent($items, $item);
+            $menuItem->children = $this->getChildrenForParent($menuItems, $menuItem);
         }
 
-        $this->prepareItems($items);
+        $this->prepareItems($menuItems);
 
-        return $items;
+        return $menuItems;
     }
 
     /**
-     * @param  \Illuminate\Support\Collection  $items
+     * @param  \Illuminate\Support\Collection  $menuItems
      * @param  \Sepiphy\Laravel\Menu\Eloquent\MenuItem  $parent
      * @return \Illuminate\Support\Collection
      */
-    protected function getChildrenForParent(Collection $items, MenuItem $parent)
+    protected function getChildrenForParent(Collection $menuItems, MenuItem $parent)
     {
         $children = collect([]);
 
-        foreach ($items as $i => $item) {
-            if ($item->parent_id === $parent->getKey()) {
-                $children->push($items->pull($i));
+        foreach ($menuItems as $i => $menuItem) {
+            if ($menuItem->parent_id === $parent->getKey()) {
+                $children->push($menuItems->pull($i));
             }
         }
 
@@ -162,40 +170,49 @@ class Displayer
     }
 
     /**
-     * @param  \Illuminate\Support\Collection  $items
+     * @param  \Illuminate\Support\Collection  $menuItems
      * @param  \Sepiphy\Laravel\Menu\Eloquent\MenuItem|null  $parent
      * @return void
      */
-    protected function prepareItems(Collection $items, MenuItem $parent = null)
+    protected function prepareItems(Collection $menuItems, MenuItem $parent = null)
     {
-        foreach ($items as $i => $item) {
-            if ($this->hide($item)) {
-                $items->pull($i);
+        foreach ($menuItems as $i => $menuItem) {
+            if (!$this->isItemVisible($menuItem)) {
+                $menuItems->pull($i);
                 continue;
             }
 
-            if (URL::to($item->link) === Request::url()) {
+            if ($this->isItemActive($menuItem)) {
                 if (! is_null($parent)) {
                     $parent->active = true;
                 }
 
-                $item->active = true;
+                $menuItem->active = true;
             } else {
-                $item->active = false;
+                $menuItem->active = false;
             }
 
-            if ($item->children->isNotEmpty()) {
-                $this->prepareItems($item->children, $item);
+            if ($menuItem->children->isNotEmpty()) {
+                $this->prepareItems($menuItem->children, $menuItem);
             }
         }
     }
 
     /**
-     * @param  \Closure  $callback
+     * @param  MenuItem  $menuItem
      * @return bool
      */
-    protected function hide($item)
+    protected function isItemVisible(MenuItem $menuItem)
     {
-        return $this->visibleCallback && ! call_user_func($this->visibleCallback, $item);
+        return $this->visibleCallback && call_user_func($this->visibleCallback, $menuItem);
+    }
+
+    /**
+     * @param  MenuItem  $menuItem
+     * @return bool
+     */
+    protected function isItemActive(MenuItem $menuItem)
+    {
+        return $this->activeCallback && call_user_func($this->activeCallback, $menuItem);
     }
 }

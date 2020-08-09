@@ -16,13 +16,13 @@ return [
         'menu_item' => Sepiphy\Laravel\Menu\Eloquent\MenuItem::class,
     ],
 
-    'views' => [
-        //
-    ],
-
     'table' => [
         'menus' => 'menus',
         'menu_items' => 'menu_items',
+    ],
+
+    'views' => [
+        //
     ],
 
 ];
