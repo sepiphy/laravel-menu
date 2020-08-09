@@ -37,6 +37,7 @@ class MenuServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/views', 'menu');
 
         $this->app[DisplayerInterface::class]->register('default', 'menu::default');
+        $this->app[DisplayerInterface::class]->register('lteside', 'menu::lteside');
 
         foreach ($this->app['config']->get('menu.views') as $type => $viewName) {
             $this->app[DisplayerInterface::class]->register($type, $viewName);

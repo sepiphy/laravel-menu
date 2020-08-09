@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Sepiphy\Laravel\Menu\Displayer;
+use Sepiphy\Laravel\Menu\DisplayerInterface;
 
 if (! function_exists('menu')) {
     /**
@@ -23,6 +23,6 @@ if (! function_exists('menu')) {
      */
     function menu(string $code, string $type = null, array $options = null)
     {
-        return app(Displayer::class)->render($code, $type, $options);
+        return app(DisplayerInterface::class)->render($code, $type, $options);
     }
 }

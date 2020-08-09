@@ -64,12 +64,14 @@ class Displayer implements DisplayerInterface
      */
     public function render(string $code, string $type = null, array $options = null)
     {
-        $viewName = $this->findViewName($code, $type);
+        $viewName = $this->findViewName($type);
 
         $menu = $this->findMenu($code);
 
+        $view = View::make($viewName)->with('menu', $menu)->with('options', $options);
+
         return new HtmlString(
-            View::make($viewName)->with('menu', $menu)
+            method_exists($view, 'render') ? $view->render() : (string) $view
         );
     }
 
@@ -94,9 +96,9 @@ class Displayer implements DisplayerInterface
      *
      * @throws \RuntimeException
      */
-    protected function findViewName(string $code, string $type = null, array $options = null)
+    protected function findViewName(string $type = 'default')
     {
-        $type = $type ?: $code;
+        $type = $type ?: 'default';
 
         if (! array_key_exists($type, $this->views)) {
             throw new RuntimeException(sprintf('The menu type "%s" is not supported.', $type));
@@ -184,6 +186,7 @@ class Displayer implements DisplayerInterface
 
             if ($this->isItemActive($menuItem)) {
                 if (! is_null($parent)) {
+                    $parent->open = true;
                     $parent->active = true;
                 }
 
