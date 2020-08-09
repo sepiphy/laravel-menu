@@ -42,13 +42,13 @@ class Displayer implements DisplayerInterface
 
     public function __construct()
     {
-        $this->visibleCallback = function (MenuItem $menuItem) {
+        $this->visibleUsing(function (MenuItem $menuItem) {
             return true;
-        };
+        });
 
-        $this->activeCallback = function (MenuItem $menuItem) {
+        $this->activeUsing(function (MenuItem $menuItem) {
             return URL::to($menuItem->link) === Request::url();
-        };
+        });
     }
 
     /**
@@ -96,7 +96,7 @@ class Displayer implements DisplayerInterface
      *
      * @throws \RuntimeException
      */
-    protected function findViewName(string $type = 'default')
+    protected function findViewName(string $type = null)
     {
         $type = $type ?: 'default';
 
