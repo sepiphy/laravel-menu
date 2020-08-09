@@ -22,25 +22,21 @@ class MenuServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/config/menu.php', 'menu');
 
-        $this->app->singleton(DisplayerInterface::class, function () {
-            return new Displayer();
+        $this->app->singleton(DisplayerInterface::class, function ($app) {
+            $this->loadViewsFrom(__DIR__.'/views', 'menu');
+
+            $displayer = new Displayer();
+
+            $displayer->register('default', 'menu::default');
+            $displayer->register('lteside', 'menu::lteside');
+
+            foreach ($app['config']['menu.views'] as $type => $viewName) {
+                $displayer->register($type, $viewName);
+            }
+
+            return $displayer;
         });
 
         $this->app->alias(DisplayerInterface::class, Displayer::class);
-    }
-
-    /**
-     * @return void
-     */
-    public function boot()
-    {
-        $this->loadViewsFrom(__DIR__.'/views', 'menu');
-
-        $this->app[DisplayerInterface::class]->register('default', 'menu::default');
-        $this->app[DisplayerInterface::class]->register('lteside', 'menu::lteside');
-
-        foreach ($this->app['config']->get('menu.views') as $type => $viewName) {
-            $this->app[DisplayerInterface::class]->register($type, $viewName);
-        }
     }
 }
