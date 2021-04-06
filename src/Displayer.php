@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
-use Sepiphy\Laravel\Menu\Eloquent\Menu;
-use Sepiphy\Laravel\Menu\Eloquent\MenuItem;
+use Sepiphy\Laravel\Menu\Models\Menu;
+use Sepiphy\Laravel\Menu\Models\MenuItem;
 
 class Displayer implements DisplayerInterface
 {
@@ -112,7 +112,7 @@ class Displayer implements DisplayerInterface
      */
     protected function findMenu(string $code)
     {
-        $class = Config::get('menu.eloquent.menu');
+        $class = Config::get('menu.model.menu');
 
         $menu = App::make($class)->where('code', $code)->first();
 
@@ -132,7 +132,7 @@ class Displayer implements DisplayerInterface
      */
     protected function getChildrenFor(Menu $menu)
     {
-        $menuItems = App::make(Config::get('menu.eloquent.menu_item'))
+        $menuItems = App::make(Config::get('menu.model.menu_item'))
             ->where('menu_id', $menu->getKey())
             ->orderBy('position')
             ->orderBy('parent_id')
@@ -155,7 +155,7 @@ class Displayer implements DisplayerInterface
 
     /**
      * @param  \Illuminate\Support\Collection  $menuItems
-     * @param  \Sepiphy\Laravel\Menu\Eloquent\MenuItem  $parent
+     * @param  \Sepiphy\Laravel\Menu\Models\MenuItem  $parent
      * @return \Illuminate\Support\Collection
      */
     protected function getChildrenForParent(Collection $menuItems, MenuItem $parent)
@@ -173,7 +173,7 @@ class Displayer implements DisplayerInterface
 
     /**
      * @param  \Illuminate\Support\Collection  $menuItems
-     * @param  \Sepiphy\Laravel\Menu\Eloquent\MenuItem|null  $parent
+     * @param  \Sepiphy\Laravel\Menu\Models\MenuItem|null  $parent
      * @return void
      */
     protected function prepareItems(Collection $menuItems, MenuItem $parent = null)

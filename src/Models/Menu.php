@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Sepiphy\Laravel\Menu\Eloquent;
+namespace Sepiphy\Laravel\Menu\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Models\Model;
 use Illuminate\Support\Facades\Config;
 
 class Menu extends Model
@@ -22,10 +22,10 @@ class Menu extends Model
     protected $fillable = ['code', 'name'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Models\Relations\HasMany
      */
     public function items()
     {
-        return $this->hasMany(Config::get('menu.eloquent.menu_item'), 'menu_id');
+        return $this->hasMany(Config::get('menu.model.menu_item'), 'menu_id');
     }
 }

@@ -1,15 +1,15 @@
 {
     "name": "sepiphy/laravel-menu",
-    "description": "The sepiphy/laravel-menu package",
+    "description": "Menu for Laravel projects",
     "keywords": [
         "sepiphy", "laravel", "laravel-menu", "menu"
     ],
     "type": "library",
     "license": "MIT",
-    "homepage": "https://github.com/sepiphy/laratools",
+    "homepage": "https://github.com/sepiphy/laravel-menu",
     "support": {
-        "issues": "https://github.com/sepiphy/laratools/issues",
-        "source": "https://github.com/sepiphy/laratools"
+        "issues": "https://github.com/sepiphy/laravel-menu/issues",
+        "source": "https://github.com/sepiphy/laravel-menu"
     },
     "authors": [
         {
@@ -18,13 +18,12 @@
         }
     ],
     "require": {
-        "php": "^7.2.0",
-        "illuminate/database": "^5.8 | ^6.0 | ^7.0",
-        "illuminate/support": "^5.8 | ^6.0 | ^7.0"
+        "illuminate/database": "^5.8 | ^6.0 | ^7.0 | ^8.0",
+        "illuminate/support": "^5.8 | ^6.0 | ^7.0 | ^8.0"
     },
     "autoload": {
         "psr-4": {
-            "Sepiphy\\Laravel\\Menu\\": ""
+            "Sepiphy\\Laravel\\Menu\\": "src/"
         },
         "files": [
             "functions.php"
