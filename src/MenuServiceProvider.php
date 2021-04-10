@@ -20,10 +20,10 @@ class MenuServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/config/menu.php', 'menu');
+        $this->mergeConfigFrom(__DIR__.'/../config/menu.php', 'menu');
 
         $this->app->singleton(DisplayerInterface::class, function ($app) {
-            $this->loadViewsFrom(__DIR__.'/views', 'menu');
+            $this->loadViewsFrom(__DIR__.'/../views', 'menu');
 
             $displayer = new Displayer();
 
