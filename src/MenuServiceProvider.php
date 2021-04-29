@@ -30,8 +30,15 @@ class MenuServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->loadMigrationsFrom(__DIR__.'/../migrations');
+
         $this->loadViewsFrom(__DIR__.'/../views', 'menu');
 
+        $this->prepareDisplayer();
+    }
+
+    protected function prepareDisplayer()
+    {
         $displayer = $this->app[DisplayerInterface::class];
 
         $displayer->register('default', 'menu::default');
