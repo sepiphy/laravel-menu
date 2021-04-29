@@ -11,9 +11,9 @@
 
 return [
 
-    'eloquent' => [
-        'menu' => Sepiphy\Laravel\Menu\Eloquent\Menu::class,
-        'menu_item' => Sepiphy\Laravel\Menu\Eloquent\MenuItem::class,
+    'model' => [
+        'menu' => Sepiphy\Laravel\Menu\Models\Menu::class,
+        'menu_item' => Sepiphy\Laravel\Menu\Models\MenuItem::class,
     ],
 
     'table' => [

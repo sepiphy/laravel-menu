@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sepiphy\Laravel\Menu\Eloquent;
+namespace Sepiphy\Laravel\Menu\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
@@ -26,6 +26,6 @@ class Menu extends Model
      */
     public function items()
     {
-        return $this->hasMany(Config::get('menu.eloquent.menu_item'), 'menu_id');
+        return $this->hasMany(Config::get('menu.model.menu_item'), 'menu_id');
     }
 }

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sepiphy\Laravel\Menu\Eloquent;
+namespace Sepiphy\Laravel\Menu\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
@@ -24,47 +24,16 @@ class MenuItem extends Model
         'link',
         'icon',
         'position',
-        'options',
         'menu_id',
         'parent_id',
     ];
-
-    /**
-     * @var array
-     */
-    protected $casts = [
-        'options' => 'object',
-        'position' => 'string',
-    ];
-
-    public function getOptionsAttribute()
-    {
-        if (!isset($this->attributes['options'])) {
-            return [];
-        }
-
-        if (is_array($this->attributes['options'])) {
-            return $this->attributes['options'];
-        } elseif (is_string($this->attributes['options'])) {
-            $tmp = json_decode($this->attributes['options'], true);
-            return json_decode($tmp, true);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOptions()
-    {
-        return $this->getOptionsAttribute();
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function menu()
     {
-        return $this->belongsTo(Config::get('menu.eloquent.menu_item'), 'menu_id');
+        return $this->belongsTo(Config::get('menu.model.menu_item'), 'menu_id');
     }
 
     /**

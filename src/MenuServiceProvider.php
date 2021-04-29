@@ -11,7 +11,10 @@
 
 namespace Sepiphy\Laravel\Menu;
 
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Sepiphy\Laravel\Menu\Models\MenuItem;
 
 class MenuServiceProvider extends ServiceProvider
 {
@@ -22,21 +25,28 @@ class MenuServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/menu.php', 'menu');
 
-        $this->app->singleton(DisplayerInterface::class, function ($app) {
-            $this->loadViewsFrom(__DIR__.'/../views', 'menu');
+        $this->app->singleton(DisplayerInterface::class, Displayer::class);
+    }
 
-            $displayer = new Displayer();
+    public function boot()
+    {
+        $this->loadViewsFrom(__DIR__.'/../views', 'menu');
 
-            $displayer->register('default', 'menu::default');
-            $displayer->register('lteside', 'menu::lteside');
+        $displayer = $this->app[DisplayerInterface::class];
 
-            foreach ($app['config']['menu.views'] as $type => $viewName) {
-                $displayer->register($type, $viewName);
-            }
+        $displayer->register('default', 'menu::default');
+        $displayer->register('lteside', 'menu::lteside');
 
-            return $displayer;
+        foreach ($this->app['config']['menu.views'] as $type => $viewName) {
+            $displayer->register($type, $viewName);
+        }
+
+        $displayer->visibleUsing(function (MenuItem $menuItem) {
+            return true;
         });
 
-        $this->app->alias(DisplayerInterface::class, Displayer::class);
+        $displayer->activeUsing(function (MenuItem $menuItem) {
+            return URL::to($menuItem->link) === Request::url();
+        });
     }
 }

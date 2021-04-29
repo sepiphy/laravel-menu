@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
-use Sepiphy\Laravel\Menu\Eloquent\Menu;
-use Sepiphy\Laravel\Menu\Eloquent\MenuItem;
+use Sepiphy\Laravel\Menu\Models\Menu;
+use Sepiphy\Laravel\Menu\Models\MenuItem;
 
 class Displayer implements DisplayerInterface
 {
@@ -39,17 +39,6 @@ class Displayer implements DisplayerInterface
      * @var \Closure
      */
     protected $activeCallback;
-
-    public function __construct()
-    {
-        $this->visibleUsing(function (MenuItem $menuItem) {
-            return true;
-        });
-
-        $this->activeUsing(function (MenuItem $menuItem) {
-            return URL::to($menuItem->link) === Request::url();
-        });
-    }
 
     /**
      * {@inheritdoc}
@@ -155,7 +144,7 @@ class Displayer implements DisplayerInterface
 
     /**
      * @param  \Illuminate\Support\Collection  $menuItems
-     * @param  \Sepiphy\Laravel\Menu\Eloquent\MenuItem  $parent
+     * @param  \Sepiphy\Laravel\Menu\Models\MenuItem  $parent
      * @return \Illuminate\Support\Collection
      */
     protected function getChildrenForParent(Collection $menuItems, MenuItem $parent)
@@ -173,7 +162,7 @@ class Displayer implements DisplayerInterface
 
     /**
      * @param  \Illuminate\Support\Collection  $menuItems
-     * @param  \Sepiphy\Laravel\Menu\Eloquent\MenuItem|null  $parent
+     * @param  \Sepiphy\Laravel\Menu\Models\MenuItem|null  $parent
      * @return void
      */
     protected function prepareItems(Collection $menuItems, MenuItem $parent = null)
@@ -207,7 +196,7 @@ class Displayer implements DisplayerInterface
      */
     protected function isItemVisible(MenuItem $menuItem)
     {
-        return $this->visibleCallback && call_user_func($this->visibleCallback, $menuItem);
+        return !is_null($this->visibleCallback) && call_user_func($this->visibleCallback, $menuItem);
     }
 
     /**
@@ -216,6 +205,6 @@ class Displayer implements DisplayerInterface
      */
     protected function isItemActive(MenuItem $menuItem)
     {
-        return $this->activeCallback && call_user_func($this->activeCallback, $menuItem);
+        return !is_null($this->activeCallback)  && call_user_func($this->activeCallback, $menuItem);
     }
 }
