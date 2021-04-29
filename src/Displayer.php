@@ -101,7 +101,7 @@ class Displayer implements DisplayerInterface
      */
     protected function findMenu(string $code)
     {
-        $class = Config::get('menu.eloquent.menu');
+        $class = Config::get('menu.model.menu');
 
         $menu = App::make($class)->where('code', $code)->first();
 
@@ -121,7 +121,7 @@ class Displayer implements DisplayerInterface
      */
     protected function getChildrenFor(Menu $menu)
     {
-        $menuItems = App::make(Config::get('menu.eloquent.menu_item'))
+        $menuItems = App::make(Config::get('menu.model.menu_item'))
             ->where('menu_id', $menu->getKey())
             ->orderBy('position')
             ->orderBy('parent_id')
