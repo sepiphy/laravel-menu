@@ -5,7 +5,7 @@
     </a>
 
     @if($item->children->isNotEmpty())
-        <ul class="treeview-menu">
+        <ul>
             @each('menu::default-item', $item->children, 'item')
         </ul>
     @endif

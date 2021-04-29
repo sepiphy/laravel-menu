@@ -152,7 +152,7 @@ class Displayer implements DisplayerInterface
         $children = collect([]);
 
         foreach ($menuItems as $i => $menuItem) {
-            if ($menuItem->parent_id === $parent->getKey()) {
+            if ($menuItem->parent_id == $parent->getKey()) {
                 $children->push($menuItems->pull($i));
             }
         }
